@@ -1,0 +1,10 @@
+{
+  "description": "Showcases Eric Zamani's expertise as a data analyst through an engaging, animated website that highlights his skills, projects, and professional insights.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
