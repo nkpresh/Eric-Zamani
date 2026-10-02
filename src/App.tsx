@@ -118,7 +118,7 @@ function Nav() {
     }}>
       <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         style={{ fontFamily: "'Instrument Serif', serif", fontSize: '1.1rem', color: 'var(--foreground)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '-0.01em' }}>
-        Eric Ozoemenam<span style={{ color: 'var(--primary)', marginLeft: 1 }}>.</span>
+        Eric Ozoemenan<span style={{ color: 'var(--primary)', marginLeft: 1 }}>.</span>
       </button>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }} className="hidden sm:flex">
