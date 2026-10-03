@@ -316,7 +316,7 @@ function About() {
           <div className="reveal-left" style={{ position: 'relative' }}>
             <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 2, aspectRatio: '3/4', maxWidth: 380, background: '#ffffff' }}>
               <img
-                src="/eric-portrait.jpeg"
+                src={`${import.meta.env.BASE_URL}eric-portrait.jpeg`}
                 alt="Ozoemenam Eric Chinecherem"
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block', mixBlendMode: 'multiply' }}
               />
