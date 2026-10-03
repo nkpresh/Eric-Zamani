@@ -1,48 +1,71 @@
-name: Deploy to GitHub Pages
+name: Build and deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.34.3
-      - name: Set up Node.js
+
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: pnpm
+          node-version: 20
+          cache: npm
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Build site
-        run: pnpm build
-        env:
-          GITHUB_PAGES: 'true'
-      - name: Upload Pages artifact
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Find build output folder
+        id: out
+        run: |
+          for d in dist build out; do
+            if [ -d "$d" ]; then
+              echo "dir=$d" >> "$GITHUB_OUTPUT"
+              echo "Using output folder: $d"
+              exit 0
+            fi
+          done
+          echo "No dist, build, or out folder found after build."
+          exit 1
+
+      - name: Add 404 fallback for single page apps
+        run: |
+          if [ -f "${{ steps.out.outputs.dir }}/index.html" ]; then
+            cp "${{ steps.out.outputs.dir }}/index.html" "${{ steps.out.outputs.dir }}/404.html"
+          fi
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: ${{ steps.out.outputs.dir }}
 
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      pages: write
-      id-token: write
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
